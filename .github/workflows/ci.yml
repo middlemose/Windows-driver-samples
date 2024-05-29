@@ -28,6 +28,7 @@ jobs:
       - name: Retrieve and build all available solutions
         run: |
           # .\Build-AllSamples.ps1 -Verbose
+          winget -v
           winget list
         env:
           WDS_Configuration: ${{ matrix.configuration }}
