@@ -54,18 +54,19 @@ $build_number=0
 # WDK NuGet will require presence of a folder 'packages'
 #
 #
-# Hack: In GitHub we do not have an environment variable where we can see WDK build number, so we have it hard coded.
-#
-if (-not $env:GITHUB_REPOSITORY -eq '') {
-    $build_environment="GitHub"
-    $build_number=22621
-}
-#
 # Hack: If user has hydrated nuget packages, then use those. That will be indicated by presence of a folder named .\packages.
 #
-elseif(Test-Path(".\packages")) {
+#
+if(Test-Path(".\packages")) {
     $build_environment=("NuGet")
     $build_number=26100
+}
+# Hack: In GitHub we do not have an environment variable where we can see WDK build number, so we have it hard coded.
+#
+# FIXME: If we rely on NUGET is this needed?
+elseif (-not $env:GITHUB_REPOSITORY -eq '') {
+    $build_environment="GitHub"
+    $build_number=22621
 }
 #
 # EWDK sets environment variable BuildLab.  For example 'ni_release_svc_prod1.22621.2428'.
