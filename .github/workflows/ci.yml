@@ -17,6 +17,9 @@ jobs:
         platform: [x64, arm64]
     runs-on: windows-2022
     steps:
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
@@ -27,8 +30,9 @@ jobs:
 
       - name: Retrieve and build all available solutions
         run: |
-          Invoke-WebRequest -Uri 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/DriverDeveloperKits-WDK/vsextensions/WDKVsix/10.0.26100.0/vspackage?targetPlatform=5e3e564c-03bb-4499-8ae5-b2b35e9a86dc' -OutFile wdk.vsix
-          & "${env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VSIXInstaller.exe" /f ".\wdk.vsix"
+          winget list
+          # Invoke-WebRequest -Uri 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/DriverDeveloperKits-WDK/vsextensions/WDKVsix/10.0.26100.0/vspackage?targetPlatform=5e3e564c-03bb-4499-8ae5-b2b35e9a86dc' -OutFile wdk.vsix
+          # & "${env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VSIXInstaller.exe" /f ".\wdk.vsix"
           # .\Build-AllSamples.ps1 -Verbose
           # Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
           # winget -v
