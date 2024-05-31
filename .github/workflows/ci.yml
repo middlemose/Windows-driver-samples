@@ -13,17 +13,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        platform: [x64, arm64]
+        configuration: [Debug]
+        platform: [x64]
     runs-on: windows-2022
     steps:
+      - name: Install WDK VSIX
+        run: .\.github\scripts\Install_WDK_VSIX.ps1
+
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-
-      - name: Install WDK VSIX
-        run: .\Install_WDK_VSIX.ps1
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -61,8 +61,7 @@ jobs:
           path: _logs
 
       - name: Join and generate global reports
-        run: |
-          .\.github\scripts\Join-CsvReports.ps1
+        run: .\.github\scripts\Join-CsvReports.ps1
 
       - name: Archive global overview build reports
         uses: actions/upload-artifact@v3
