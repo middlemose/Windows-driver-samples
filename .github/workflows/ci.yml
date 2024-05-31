@@ -17,19 +17,19 @@ jobs:
         platform: [x64]
     runs-on: windows-2022
     steps:
-      - name: Install WDK VSIX
-        run: .\.github\scripts\Install_WDK_VSIX.ps1
-
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
       - name: Install Nuget Packages
         run: nuget restore .\packages.config -PackagesDirectory .\packages\
+
+      - name: Install WDK VSIX
+        run: .\.github\scripts\Install_WDK_VSIX.ps1
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
       - name: Retrieve and build all available solutions
         run: .\Build-AllSamples.ps1 -Verbose
