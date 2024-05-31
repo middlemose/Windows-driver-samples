@@ -12,7 +12,7 @@ Enter-VsDevShell -VsInstallPath "$env:ProgramFiles\Microsoft Visual Studio\2022\
 "<--- Finished launching the developer powershell environment."
 
 # Check if we have the WDK.vsix
-"---> Checking if we have the right wkd.vsix installed..."
+"---> Checking if we have the right WDK.vsix installed..."
 $installed = ls "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=*" | Select -ExpandProperty Name
 "<--- Installed WDK package: $installed"
 if (Test-Path "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=$VSIX_VERSION") {
@@ -27,7 +27,7 @@ else {
     "<--- Finished Downloading the WDK.vsix."
 
     # Force vsix install
-    "---> Starting wdk.vsix install..."
+    "---> Starting wdk.vsix install process. This will take some time to complete..."
     Start-Process vsixinstaller -ArgumentList "/f /q .\wdk.vsix" -wait
     "<--- The wdk.vsix install process finished."
 
@@ -42,4 +42,8 @@ else {
         "<--- The WDK.vsix install FAILED."
         return $false
     }
+
+    # test build
+    cd "\a\Windows-driver-samples\Windows-driver-samples"
+    msbuild .\general\echo\kmdf\kmdfecho.sln -clp:Verbosity=m -t:rebuild -p:TargetVersion=Windows10 -p:InfVerif_AdditionalOptions="/samples" -noLogo -property:Configuration="Debug"
 }

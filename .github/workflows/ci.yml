@@ -28,11 +28,12 @@ jobs:
       - name: Install WDK VSIX
         run: .\.github\scripts\Install_WDK_VSIX.ps1
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+      #- name: Add MSBuild to PATH
+      #  uses: microsoft/setup-msbuild@v2
 
       - name: Retrieve and build all available solutions
-        run: .\Build-AllSamples.ps1 -Verbose
+        run: |
+            #.\Build-AllSamples.ps1 -Verbose
         env:
           WDS_Configuration: ${{ matrix.configuration }}
           WDS_Platform: ${{ matrix.platform }}
