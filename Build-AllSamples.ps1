@@ -1,4 +1,5 @@
 <#
+
 .SYNOPSIS
 Builds all available sample solutions in the repository (excluding specific solutions).
 
@@ -34,6 +35,10 @@ None.
 
 #>
 
+# use develper powershell
+Import-Module (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*\Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
+Enter-VsDevShell -VsInstallPath (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*")
+
 [CmdletBinding()]
 param(
     [string]$Samples = "",
@@ -48,10 +53,11 @@ if ($PSBoundParameters.ContainsKey('Verbose')) {
     $Verbose = $PsBoundParameters.Get_Item('Verbose')
 }
 
+# ensure we are at the root of the repo
+cd "$env:GITHUB_WORKSPACE"
 $root = Get-Location
-$solutionFiles = Get-ChildItem -Path $root -Recurse -Filter *.sln | Select-Object -ExpandProperty FullName
 
-# To include in CI gate
+$solutionFiles = Get-ChildItem -Path $root -Recurse -Filter *.sln | Select-Object -ExpandProperty FullName
 $sampleSet = @{}
 foreach ($file in $solutionFiles) {
     $dir = (Get-Item $file).DirectoryName

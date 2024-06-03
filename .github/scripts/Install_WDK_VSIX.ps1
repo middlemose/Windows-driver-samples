@@ -1,21 +1,21 @@
 <#
+
 .SYNOPSIS
 Downloads and installs the WDK vsix.
-#>
 
-$VSIX_VERSION = "10.0.26100.0"
+#>
 
 # Developer PowerShell
 "---> Launching the developer powershell environment for WDK.vsix download and install..."
-Import-Module "$env:ProgramFiles\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
-Enter-VsDevShell -VsInstallPath "$env:ProgramFiles\Microsoft Visual Studio\2022\Enterprise"
+Import-Module (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*\Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
+Enter-VsDevShell -VsInstallPath (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*")
 "<--- Finished launching the developer powershell environment."
 
 # Check if we have the WDK.vsix
 "---> Checking if we have the right WDK.vsix installed..."
 $installed = ls "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=*" | Select -ExpandProperty Name
 "<--- Installed WDK.vsix version: $installed"
-if (Test-Path "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=$VSIX_VERSION") {
+if (Test-Path "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=$env:VSIX_VERSION") {
     "<--- We have the correct WDK.vsix insalled."
 }
 else {
@@ -23,7 +23,7 @@ else {
     
     # Download amd64
     "---> Downloading the WDK.vsix for install...."
-    Invoke-WebRequest -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/DriverDeveloperKits-WDK/vsextensions/WDKVsix/10.0.26100.0/vspackage?targetPlatform=5e3e564c-03bb-4499-8ae5-b2b35e9a86dc" -OutFile wdk.vsix
+    Invoke-WebRequest -Uri "$env:VSIX_URI" -OutFile wdk.vsix
     "<--- Finished Downloading the WDK.vsix."
 
     # Force vsix install
@@ -35,17 +35,11 @@ else {
     "---> Checking the WDK.vsix version installed..."
     $installed = ls "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=*" | Select -ExpandProperty Name
     "<--- Installed WDK.vsix version: $installed"
-    if (Test-Path "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=$VSIX_VERSION") { 
+    if (Test-Path "${env:ProgramData}\Microsoft\VisualStudio\Packages\Microsoft.Windows.DriverKit,version=$env:VSIX_VERSION") { 
         "<--- The WDK.vsix version is OK."
     }
     else {
         "<--- The WDK.vsix install FAILED."
         return $false
     }
-
-    # test build
-    "---> Testing build..."
-    cd "D:\a\Windows-driver-samples\Windows-driver-samples"
-    msbuild .\general\echo\kmdf\kmdfecho.sln -clp:Verbosity=m -t:rebuild -p:TargetVersion=Windows10 -p:InfVerif_AdditionalOptions="/samples" -noLogo -property:Configuration="Debug"
-    "<--- Done"
 }

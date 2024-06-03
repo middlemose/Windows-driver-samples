@@ -2,6 +2,8 @@ name: Build all driver samples
 env:
   VSIX_VERSION: 10.0.26100.0
   VSIX_URI: https://marketplace.visualstudio.com/_apis/public/gallery/publishers/DriverDeveloperKits-WDK/vsextensions/WDKVsix/10.0.26100.0/vspackage?targetPlatform=5e3e564c-03bb-4499-8ae5-b2b35e9a86dc
+  BUILD_NUMBER: 26100
+  VERBOSE_BUILD_NUMBER: 10.0.26100.1
 on:
   push:
     branches:
@@ -20,40 +22,36 @@ jobs:
         platform: [x64, arm64]
     runs-on: windows-2022
     steps:
-        - name: Print Environment
-          run: | 
-              Write-Output "$env:VSIX_VERSION"
-              Write-Output "$env:VSIX_URI"
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      
+      - name: Generate Files
+        run: .\.github\scripts\Generate_Files.ps1
 
+      - name: Install Nuget Packages
+        run: nuget restore .\packages.config -PackagesDirectory .\packages\
 
-      # - name: Check out repository code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     submodules: 'recursive'
-
-      # - name: Install Nuget Packages
-      #   run: nuget restore .\packages.config -PackagesDirectory .\packages\
-
-      # - name: Install WDK VSIX
-      #   run: .\.github\scripts\Install_WDK_VSIX.ps1
+      - name: Install WDK VSIX
+        run: .\.github\scripts\Install_WDK_VSIX.ps1
 
       #- name: Add MSBuild to PATH
       #  uses: microsoft/setup-msbuild@v2
 
-      # - name: Retrieve and build all available solutions
-      #   run: |
-      #       #.\Build-AllSamples.ps1 -Verbose
-      #   env:
-      #     WDS_Configuration: ${{ matrix.configuration }}
-      #     WDS_Platform: ${{ matrix.platform }}
-      #     WDS_ReportFileName: _overview.${{ matrix.configuration }}.${{ matrix.platform }}
+      - name: Retrieve and build all available solutions
+        run: .\Build-AllSamples.ps1 -Verbose
+        env:
+          WDS_Configuration: ${{ matrix.configuration }}
+          WDS_Platform: ${{ matrix.platform }}
+          WDS_ReportFileName: _overview.${{ matrix.configuration }}.${{ matrix.platform }}
 
-      # - name: Archive build logs and overview build reports
-      #   uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: logs
-      #     path: _logs
+      - name: Archive build logs and overview build reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: logs
+          path: _logs
 
   report:
     name: Generate global report
