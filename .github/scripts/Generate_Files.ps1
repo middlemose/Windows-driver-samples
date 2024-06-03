@@ -5,7 +5,7 @@ Generates the props and config file for overall less maintenance.
 
 #>
 
-$build_number = "$env:VERBOSE_BUILD_NUMBER"
+$build_number = "$env:NUGET_VERSION"
 
 # generate Directory.Build.props
 @"

@@ -3,7 +3,7 @@ env:
   VSIX_VERSION: 10.0.26100.0
   VSIX_URI: https://marketplace.visualstudio.com/_apis/public/gallery/publishers/DriverDeveloperKits-WDK/vsextensions/WDKVsix/10.0.26100.0/vspackage?targetPlatform=5e3e564c-03bb-4499-8ae5-b2b35e9a86dc
   BUILD_NUMBER: 26100
-  VERBOSE_BUILD_NUMBER: 10.0.26100.1
+  NUGET_VERSION: 10.0.26100.1
 on:
   push:
     branches:

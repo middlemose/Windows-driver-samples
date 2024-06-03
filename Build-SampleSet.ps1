@@ -51,13 +51,14 @@ finally {
 $build_environment=""
 $build_number=0
 #
-# WDK NuGet will require presence of a folder 'packages'
+# github environment uses $env variables set in ci.yml
 #
 if ($env:GITHUB_REPOSITORY) {
     $build_environment="GitHub"
     $build_number="$env:BUILD_NUMBER"
 }
 #
+# WDK NuGet will require presence of a folder 'packages'
 # Hack: If user has hydrated nuget packages, then use those. That will be indicated by presence of a folder named .\packages.
 #
 elseif(Test-Path(".\packages")) {

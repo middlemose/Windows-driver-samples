@@ -35,10 +35,6 @@ None.
 
 #>
 
-# use develper powershell
-Import-Module (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*\Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
-Enter-VsDevShell -VsInstallPath (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*")
-
 [CmdletBinding()]
 param(
     [string]$Samples = "",
@@ -47,6 +43,10 @@ param(
     [string]$LogFilesDirectory = (Join-Path (Get-Location) "_logs"),
     [int]$ThrottleLimit
 )
+
+# use develper powershell for build
+Import-Module (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*\Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
+Enter-VsDevShell -VsInstallPath (Resolve-Path "$env:ProgramFiles\Microsoft Visual Studio\2022\*")
 
 $Verbose = $false
 if ($PSBoundParameters.ContainsKey('Verbose')) {
